@@ -56,6 +56,7 @@ export class EmailValidator {
     let local: string;
     let domain: string;
     let mxRecords: string[];
+    const domainGreyList = ['yahoo.com', 'hotmail.com', 'bluewin.ch'];
 
     try {
       [local, domain] = EmailValidator.extractAddressParts(address);
@@ -65,6 +66,12 @@ export class EmailValidator {
     }
 
     result.wellFormed = ResultValue.VALID;
+
+    console.log;
+    if (domainGreyList.includes(domain)) {
+      this.log.debug(`Domain ${domain} is greylisted. Skipping check`);
+      return result;
+    }
 
     // save a DNS call
     if (!this.options.verifyDomain && !this.options.verifyMailbox)
